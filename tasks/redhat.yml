@@ -41,6 +41,6 @@
     - { name: '{{ redhat_cloudwatch_agent_filename }}'}
 
 - name: register cloudwatch agent (redhat)
-  shell: '/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:file:{{ lin_agent_path }}{{ item.name }}'
+  shell: '{{ lin_reg_command }}'
   with_items:
     - { name: '{{ redhat_cloudwatch_agent_config }}' }
