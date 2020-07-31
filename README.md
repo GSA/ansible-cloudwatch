@@ -7,9 +7,10 @@ Requirements
 ------------
 
 Required Packages (this role requires access to the following packages/installers)
-- cloudwatch.rpm - linux installer package
+- cloudwatch.rpm - redhat installer package
 - cloudwatch.exe - windows installer package
-- masthead.afxm - bigfix masthead file
+- linux-cw-agent.json - redhat configuration file
+- win-cw-agent.json - windows configuration file
 
 Role Variables
 --------------
