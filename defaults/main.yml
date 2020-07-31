@@ -7,5 +7,7 @@ windows_cloudwatch_agent_filename: "cloudwatch.msi"
 redhat_cloudwatch_agent_filename: "cloudwatch.rpm"
 windows_cloudwatch_agent_config: "win-cw-agent.json"
 redhat_cloudwatch_agent_config: "linux-cw-agent.json"
-win_reg_command: '& "C:\Program Files\Amazon\AmazonCloudWatchAgent\amazon-cloudwatch-agent-ctl.ps1" -a fetch-config -m ec2 -s -c file:{{ win_agent_path }}{{ item.name }}'
-lin_reg_command: '/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:file:{{ lin_agent_path }}{{ item.name }}'
+windows_cloudwatch_path: "C:\\Program Files\\Amazon\\AmazonCloudWatchAgent\\amazon-cloudwatch-agent-ctl.ps1"
+redhat_cloudwatch_path: '/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl'
+win_reg_command: '& {{ windows_cloudwatch_path }} -a fetch-config -m ec2 -s -c file:{{ win_agent_path }}{{ item.name }}'
+lin_reg_command: '{{ redhat_cloudwatch_path }} -a fetch-config -m ec2 -s -c file:file:{{ lin_agent_path }}{{ item.name }}'
