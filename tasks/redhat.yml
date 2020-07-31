@@ -1,0 +1,46 @@
+---
+- name: create {{ lin_agent_path }} directory
+  file:
+    path: '{{ lin_agent_path }}'
+    state: directory
+    mode: '0755'
+
+- name: checking for installer
+  stat:
+    path: '{{ lin_agent_path }}{{ redhat_cloudwatch_agent_filename }}'
+  register: installer
+
+- name: checking for config
+  stat:
+    path: '{{ lin_agent_path }}{{ redhat_cloudwatch_agent_config }}'
+  register: config
+
+- name: move installer to {{ lin_install_path }} directory
+  copy:
+    src: '{{ lin_agent_path }}/{{ item.name }}'
+    dest: '{{ lin_agent_path }}/{{ item.name }}'
+    mode: '0755'
+  with_items:
+    - { name: '{{ redhat_cloudwatch_agent_filename }}'}
+  when: not installer.stat.exists
+
+- name: move config to {{ lin_install_path }} directory
+  copy:
+    src: '{{ lin_agent_path }}/{{ item.name }}'
+    dest: '{{ lin_agent_path }}/{{ item.name }}'
+    mode: '0755'
+  with_items:
+    - { name: '{{ redhat_cloudwatch_agent_filename }}'}
+  when: not config.stat.exists
+
+- name: install cloudwatch agent (redhat)
+  yum:
+    name: '{{ lin_agent_path }}/{{ item.name }}'
+    state: installed
+  with_items:
+    - { name: '{{ redhat_cloudwatch_agent_filename }}'}
+
+- name: register cloudwatch agent (redhat)
+  shell: '/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:file:{{ lin_agent_path }}{{ item.name }}'
+  with_items:
+    - { name: '{{ redhat_cloudwatch_agent_config }}' }
