@@ -28,7 +28,7 @@
     powershell.exe ./amazon-cloudwatch-agent-ctl.ps1 \
         -a fetch-config \
         -m ec2 \
-        -c file:'{{ windows_cloudwatch_path }}/amazon-cloudwatch-agent.json' \
+        -c file:'{{ windows_cloudwatch_path }}//amazon-cloudwatch-agent.json' \
         -s
   args:
     chdir: "{{ windows_cloudwatch_path }}"
