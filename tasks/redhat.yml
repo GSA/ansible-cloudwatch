@@ -9,7 +9,7 @@
 - name: create cloudwatch config (redhat)
   template:
     src: templates/amazon-cloudwatch-agent.j2
-    dest: {{ redhat_agent_path }}/amazon-cloudwatch-agent.json
+    dest: '{{ redhat_agent_path }}/amazon-cloudwatch-agent.json'
 
 - name: install cloudwatch agent (redhat)
   yum:
