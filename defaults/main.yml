@@ -3,3 +3,5 @@
 windows_agent_log: "C:\\Temp\\Logs" # default agent log directory windows
 windows_cloudwatch_path: "C:\\Program Files\\Amazon\\AmazonCloudWatchAgent"
 redhat_cloudwatch_path: '/opt/aws/amazon-cloudwatch-agent'
+windows_cloudwatch_agent_url: ""
+redhat_cloudwatch_agent_url: ""

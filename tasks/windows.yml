@@ -14,13 +14,14 @@
 - name: create cloudwatch config (windows)
   template:
     src: 'templates/amazon-cloudwatch-agent-schema.j2'
-    dest: '{{ windows_cloudwatch_path }}//amazon-cloudwatch-agent-schema.json'
+    dest: '{{ windows_cloudwatch_path }}\\amazon-cloudwatch-agent-schema.json'
 
 - name: install cloudwatch agent (windows)
   win_package:
     path: '{{ windows_cloudwatch_agent_url }}'
     state: present
     log_path: '{{ win_agent_log }}\\cloudwatch_log.txt'
+    product_id: '{{ windows_cloudwatch_product_id }}'
     validate_certs: no
 
 - name: start cloudwatch agent (windows)
@@ -28,7 +29,7 @@
     powershell.exe ./amazon-cloudwatch-agent-ctl.ps1 \
         -a fetch-config \
         -m ec2 \
-        -c file:'{{ windows_cloudwatch_path }}//amazon-cloudwatch-agent.json' \
+        -c file:'{{ windows_cloudwatch_path }}\\amazon-cloudwatch-agent.json' \
         -s
   args:
     chdir: "{{ windows_cloudwatch_path }}"
