@@ -20,7 +20,7 @@
   win_package:
     path: '{{ windows_cloudwatch_agent_url }}'
     state: present
-    log_path: '{{ win_agent_log }}\\cloudwatch_log.txt'
+    log_path: '{{ windows_agent_log }}\\cloudwatch_log.txt'
     product_id: '{{ windows_cloudwatch_product_id }}'
     validate_certs: no
 
