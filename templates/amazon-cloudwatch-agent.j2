@@ -1,0 +1,86 @@
+{
+  "agent": {
+    "metrics_collection_interval": 300,
+    "logfile": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
+  },
+  "logs": {
+        "force_flush_interval": 15,
+        "logs_collected": {
+            "files": {
+                "collect_list": [
+                    {
+                        "file_path": "/var/log/auth.log",
+                        "log_group_name": "hosts",
+                        "log_stream_name": "{hostname}",
+                        "timezone": "Local"
+                    },
+                    {
+                        "file_path": "/var/log/messages",
+                        "log_group_name": "hosts",
+                        "log_stream_name": "{hostname}",
+                        "timezone": "Local"
+                    }
+                ]
+            }
+        }
+    },
+  "metrics": {
+    "metrics_collected": {
+      "disk": {
+        "metrics_collection_interval": 600,
+        "resources": [
+          "/"
+        ],
+        "measurement": [
+          {"name": "disk_free", "rename": "DISK_FREE", "unit": "Gigabytes"}
+        ]
+      },
+
+      "mem": {
+        "metrics_collection_interval": 300,
+        "measurement": [
+          {"name": "mem_free", "rename": "MEM_FREE", "unit": "Megabytes"},
+          {"name": "mem_total", "rename": "MEM_TOTAL", "unit": "Megabytes"},
+          {"name": "mem_used", "rename": "MEM_USED", "unit": "Megabytes"}
+        ]
+      },
+      "net": {
+        "metrics_collection_interval": 600,
+        "resources": [
+          "*"
+        ],
+        "measurement": [
+          {"name": "net_bytes_recv", "rename": "NET_BYTES_RECV", "unit": "Bytes"},
+          {"name": "net_bytes_sent", "rename": "NET_BYTES_SENT", "unit": "Bytes"}
+        ]
+      },
+      "netstat": {
+        "metrics_collection_interval": 1800,
+        "measurement": [
+          {"name": "netstat_tcp_listen", "rename": "NETSTAT_TCP_LISTEN", "unit": "Count"},
+          {"name": "netstat_tcp_syn_sent", "rename": "NETSTAT_TCP_SYN_SENT", "unit": "Count"},
+          {"name": "netstat_tcp_established", "rename": "NETSTAT_TCP_ESTABLISHED", "unit": "Count"}
+        ]
+      },
+      "processes": {
+        "metrics_collection_interval": 1800,
+        "measurement": [
+          {"name": "processes_blocked", "rename": "PROCESSES_BLOCKED", "unit": "Count"},
+          {"name": "processes_running", "rename": "PROCESSES_RUNNING", "unit": "Count"},
+          {"name": "processes_zombies", "rename": "PROCESSES_ZOMBIES", "unit": "Count"}
+        ]
+      }
+    },
+    "append_dimensions": {
+          "AutoScalingGroupName": "${!aws:AutoScalingGroupName}",
+          "ImageId": "${!aws:ImageId}",
+          "InstanceId": "${aws:InstanceId}",
+          "InstanceType": "${!aws:InstanceType}"
+    },
+    "aggregation_dimensions" : [
+            ["AutoScalingGroupName"],
+            ["InstanceId", "InstanceType"],
+            []
+        ]
+  }
+}

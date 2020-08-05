@@ -1,0 +1,112 @@
+{
+        "logs": {
+                "logs_collected": {
+                        "files": {
+                                "collect_list": [
+                                        {
+                                                "file_path": "c:\\ProgramData\\Amazon\\CloudWatchAgent\\Logs\\amazon-cloudwatch-agent.log",
+                                                "log_group_name": "hosts",
+                                                "log_stream_name": "{local_hostname}"
+                                        },
+
+                                        {
+                                                "file_path": "c:\\ProgramData\\ssh\\logs\sftp-server.log",
+                                                "log_group_name": "hosts",
+                                                "log_stream_name": "{local_hostname}"
+                                        }
+                                ]
+                        },
+                        "windows_events": {
+                                "collect_list": [
+                                        {
+                                                "event_format": "xml",
+                                                "event_levels": [
+                                                        "WARNING",
+                                                        "ERROR",
+                                                        "CRITICAL"
+                                                ],
+                                                "event_name": "System",
+                                                "log_group_name": "windows/System",
+                                                "log_stream_name": "{local_hostname}"
+                                        },
+                                        {
+                                                "event_format": "xml",
+                                                "event_levels": [
+                                                        "WARNING",
+                                                        "ERROR",
+                                                        "CRITICAL"
+                                                ],
+                                                "event_name": "Security",
+                                                "log_group_name": "windows/Security",
+                                                "log_stream_name": "{local_hostname}"
+                                        },
+                                        {
+                                                "event_format": "xml",
+                                                "event_levels": [
+                                                        "WARNING",
+                                                        "ERROR",
+                                                        "CRITICAL"
+                                                ],
+                                                "event_name": "Application",
+                                                "log_group_name": "windows/Application",
+                                                "log_stream_name": "{local_hostname}"
+                                        }
+                                ]
+                        }
+                }
+        },
+        "metrics": {
+                "append_dimensions": {
+                        "AutoScalingGroupName": "${aws:AutoScalingGroupName}",
+                        "ImageId": "${aws:ImageId}",
+                        "InstanceId": "${aws:InstanceId}",
+                        "InstanceType": "${aws:InstanceType}"
+                },
+                "metrics_collected": {
+                        "LogicalDisk": {
+                                "measurement": [
+                                        "% Free Space"
+                                ],
+                                "metrics_collection_interval": 60,
+                                "resources": [
+                                        "*"
+                                ]
+                        },
+                        "Memory": {
+                                "measurement": [
+                                        "% Committed Bytes In Use"
+                                ],
+                                "metrics_collection_interval": 60
+                        },
+                        "Paging File": {
+                                "measurement": [
+                                        "% Usage"
+                                ],
+                                "metrics_collection_interval": 60,
+                                "resources": [
+                                        "*"
+                                ]
+                        },
+                        "PhysicalDisk": {
+                                "measurement": [
+                                        "% Disk Time"
+                                ],
+                                "metrics_collection_interval": 60,
+                                "resources": [
+                                        "*"
+                                ]
+                        },
+                        "Processor": {
+                                "measurement": [
+                                        "% User Time",
+                                        "% Idle Time",
+                                        "% Interrupt Time"
+                                ],
+                                "metrics_collection_interval": 60,
+                                "resources": [
+                                        "_Total"
+                                ]
+                        }
+                }
+        }
+}

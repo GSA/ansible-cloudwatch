@@ -1,13 +1,5 @@
 ---
 # defaults file for ansible-cloudwatch
-win_agent_path: "C:\\Temp\\Agents\\" # default agent path directory windows
-lin_agent_path: "/opt/GSA/install_files" # default agent path directory redhat
-win_agent_logs: "C:\\Temp\\Agents\\Logs" # default agent log directory windows
-windows_cloudwatch_agent_filename: "cloudwatch.msi"
-redhat_cloudwatch_agent_filename: "cloudwatch.rpm"
-windows_cloudwatch_agent_config: "win-cw-agent.json"
-redhat_cloudwatch_agent_config: "linux-cw-agent.json"
-windows_cloudwatch_path: "C:\\Program Files\\Amazon\\AmazonCloudWatchAgent\\amazon-cloudwatch-agent-ctl.ps1"
-redhat_cloudwatch_path: '/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl'
-win_reg_command: '& {{ windows_cloudwatch_path }} -a fetch-config -m ec2 -s -c file:{{ win_agent_path }}{{ item.name }}'
-lin_reg_command: '{{ redhat_cloudwatch_path }} -a fetch-config -m ec2 -s -c file:file:{{ lin_agent_path }}{{ item.name }}'
+windows_agent_log: "C:\\Temp\\Logs" # default agent log directory windows
+windows_cloudwatch_path: "C:\\Program Files\\Amazon\\AmazonCloudWatchAgent"
+redhat_cloudwatch_path: '/opt/aws/amazon-cloudwatch-agent'

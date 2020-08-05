@@ -1,52 +1,34 @@
 ---
-- name: create {{ win_agent_path }} directory
+- name: create {{ windows_agent_log }} directory
   win_file:
-    path: '{{ win_agent_path }}'
+    path: '{{ windows_agent_log }}'
+    recurse: yes
     state: directory
 
-- name: create {{ win_agent_logs }} directory
+- name: create {{ windows_cloudwatch_path }} directory
   win_file:
-    path: '{{ win_agent_logs }}'
+    path: '{{ windows_cloudwatch_path }}'
+    recurse: yes
     state: directory
 
-- name: checking for installer
-  win_stat:
-    path: '{{ win_agent_path }}{{ windows_cloudwatch_agent_filename }}'
-  register: installer
-
-- name: checking for config
-  win_stat:
-    path: '{{ win_agent_path }}{{ windows_cloudwatch_agent_config }}'
-  register: config
-
-- name: move installer to {{ win_agent_path }} directory
-  win_copy:
-    src: '{{ lin_agent_path }}/{{ item.name }}'
-    dest: '{{ win_agent_path }}{{ item.name }}'
-  with_items:
-    - { name: '{{ windows_cloudwatch_agent_filename }}'}
-  when: not installer.stat.exists
-
-- name: move config to {{ win_agent_path }} directory
-  win_copy:
-    src: '{{ lin_agent_path }}/{{ item.name }}'
-    dest: '{{ win_agent_path }}{{ item.name }}'
-  with_items:
-    - { name: '{{ windows_cloudwatch_agent_config }}'}
-  when: not config.stat.exists
+- name: create cloudwatch config (windows)
+  template:
+    src: 'templates/amazon-cloudwatch-agent-schema.j2'
+    dest: '{{ windows_cloudwatch_path }}//amazon-cloudwatch-agent-schema.json'
 
 - name: install cloudwatch agent (windows)
   win_package:
-    path: '{{ win_agent_path }}\\{{ item.name }}'
-    chdir: '{{ win_agent_path }}'
+    path: '{{ windows_cloudwatch_agent_url }}'
     state: present
-    log_path: '{{ win_agent_logs }}\\{{ item.name }}_log.txt'
+    log_path: '{{ win_agent_log }}\\cloudwatch_log.txt'
     validate_certs: no
-  with_items:
-    - { name: '{{ windows_cloudwatch_agent_filename }}' }
-  when: ansible_os_family == 'Windows'
 
-- name: register cloudwatch agent (windows)
-  win_shell: '{{ win_reg_command }}'
-  with_items:
-    - { name: '{{ windows_cloudwatch_agent_config }}' }
+- name: start cloudwatch agent (windows)
+  win_command: |
+    powershell.exe ./amazon-cloudwatch-agent-ctl.ps1 \
+        -a fetch-config \
+        -m ec2 \
+        -c file:'{{ windows_cloudwatch_path }}/amazon-cloudwatch-agent.json' \
+        -s
+  args:
+    chdir: "{{ windows_cloudwatch_path }}"

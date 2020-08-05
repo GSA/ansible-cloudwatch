@@ -1,2 +1,4 @@
 ---
 # vars file for ansible-cloudwatch
+windows_cloudwatch_agent_url: ""
+redhat_cloudwatch_agent_url: ""
