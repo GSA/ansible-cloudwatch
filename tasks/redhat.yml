@@ -1,7 +1,7 @@
 ---
-- name: create {{ redhat_agent_path }} directory
+- name: create {{ redhat_cloudwatch_path }} directory
   file:
-    path: '{{ redhat_agent_path }}'
+    path: '{{ redhat_cloudwatch_path }}'
     recurse: yes
     state: directory
     mode: '0755'
@@ -9,7 +9,7 @@
 - name: create cloudwatch config (redhat)
   template:
     src: templates/amazon-cloudwatch-agent.j2
-    dest: '{{ redhat_agent_path }}/amazon-cloudwatch-agent.json'
+    dest: '{{ redhat_cloudwatch_path }}/amazon-cloudwatch-agent.json'
 
 - name: install cloudwatch agent (redhat)
   yum:
