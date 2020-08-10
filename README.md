@@ -6,19 +6,28 @@ This ansible role installs and configures the cloudwatch agent required to commu
 Requirements
 ------------
 
-Required Packages (this role requires access to the following packages/installers)
+Required Packages (this role requires access to the following packages/installers via an external repository)
 - cloudwatch.rpm - redhat installer package
-- cloudwatch.exe - windows installer package
-- linux-cw-agent.json - redhat configuration file
-- win-cw-agent.json - windows configuration file
+- cloudwatch.msi - windows installer package
 
 Role Variables
 --------------
 
+### Windows
+
 | Variable | Default | Purpose |
 | ------ | ------ | ------ |
-| redhat_cloudwatch_agent_filename | "" | redhat installer rpm |
-| windows_cloudwatch_agent_filename | "" | windows installer msi |
+| windows_cloudwatch_agent_path | "C:\\Program Files\\Amazon\\AmazonCloudWatchAgent" | default windows install directory |
+| windows_cloudwatch_agent_url | "" | windows installer msi |
+| windows_cloudwatch_product_id | "" | windows product_id |
+| windows_agent_log | "C:\Temp\Logs" | default agent windows log directory |
+
+### Redhat
+
+| Variable | Default | Purpose |
+| ------ | ------ | ------ |
+| redhat_cloudwatch_agent_path | "/opt/aws/amazon-cloudwatch-agent" | default redhat install directory |
+| redhat_cloudwatch_agent_url | "" | redhat installer rpm |
 
 Dependencies
 ------------
