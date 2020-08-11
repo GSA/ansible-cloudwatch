@@ -14,7 +14,7 @@
 
 - name: create {{ redhat_cloudwatch_agent_path }} directory
   file:
-    path: '{{ redhat_cloudwatch_agent_path }}'
+    path: '{{ redhat_cloudwatch_agent_path }}/etc/'
     recurse: yes
     state: directory
     mode: '0755'
@@ -23,13 +23,16 @@
 - name: create cloudwatch config (redhat)
   template:
     src: templates/amazon-cloudwatch-agent.j2
-    dest: '{{ redhat_cloudwatch_agent_path }}/amazon-cloudwatch-agent.json'
+    dest: '{{ redhat_cloudwatch_agent_path }}/etc/amazon-cloudwatch-agent.json'
   when: path.stat.islnk is not defined
 
 - name: install cloudwatch agent (redhat)
   yum:
     name: '{{ redhat_cloudwatch_agent_url }}'
-    state: installed
+    state: present
+    validate_certs: no
+    disable_plugin: "yum-rhn-plugin"
+    disablerepo: "rhel-8-appstream-rhui-rpms,rhel-8-baseos-rhui-rpms,rhui-client-config-server-8"
   when: path.stat.islnk is not defined
 
 - name: start cloudwatch agent (redhat)
@@ -37,10 +40,10 @@
     ./amazon-cloudwatch-agent-ctl \
         -a fetch-config \
         -m ec2 \
-        -c file:'{{ redhat_cloudwatch_agent_path }}/amazon-cloudwatch-agent.json' \
+        -c file:'{{ redhat_cloudwatch_agent_path }}/etc/amazon-cloudwatch-agent.json' \
         -s
   args:
-    chdir: "{{ redhat_cloudwatch_path }}/bin"
+    chdir: "{{ redhat_cloudwatch_agent_path }}/bin"
   when: path.stat.islnk is not defined
 
 - name: verify cloudwatch started
