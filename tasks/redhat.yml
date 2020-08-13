@@ -1,31 +1,32 @@
 ---
 - name: checking for agent install
   stat:
-    path: '{{ redhat_cloudwatch_agent_path }}'
-  register: path
+    path: '{{ redhat_cloudwatch_agent_path }}/bin/amazon-cloudwatch-agent'
+  register: agent
 
 - debug:
-    msg: "cloudwatch agent not found"
-  when: path.stat.islnk is not defined
+    msg: "cloudwatch agent not found (installing)"
+  when: not agent.stat.exists
 
 - debug:
-    msg: "cloudwatch agent found skipping install"
-  when: path.stat.islnk is defined
+    msg: "cloudwatch agent found (skipping install)"
+  when: agent.stat.exists
 
 - name: install cloudwatch agent (redhat)
   yum:
     name: '{{ redhat_cloudwatch_agent_url }}'
-    state: latest
+    state: present
     validate_certs: no
     disable_plugin: "yum-rhn-plugin"
     disablerepo: "rhel-8-appstream-rhui-rpms,rhel-8-baseos-rhui-rpms,rhui-client-config-server-8"
-  when: path.stat.islnk is not defined
+    download_dir: '{{ redhat_cloudwatch_agent_path }}'
+  when: not agent.stat.exists
 
 - name: create cloudwatch config (redhat)
   template:
     src: templates/amazon-cloudwatch-agent.j2
     dest: '{{ redhat_cloudwatch_agent_path }}/amazon-cloudwatch-agent.json'
-  when: path.stat.islnk is not defined
+  when: not agent.stat.exists
 
 - name: start cloudwatch agent (redhat)
   command: |
@@ -36,7 +37,7 @@
         -s
   args:
     chdir: "{{ redhat_cloudwatch_agent_path }}/bin"
-  when: path.stat.islnk is not defined
+  when: not agent.stat.exists
 
 - name: verify cloudwatch started
   service:
