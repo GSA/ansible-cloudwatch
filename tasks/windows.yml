@@ -1,58 +1,51 @@
 ---
 - name: checking for agent install
-  win_stat:
-    path: '{{ windows_cloudwatch_agent_path }}'
-  register: path
+  win_service:
+    name: amazoncloudwatchagent
+  register: agent
 
 - debug:
-    msg: "cloudwatch agent not found"
-  when: path.stat.islnk is not defined
+    msg: "cloudwatch agent not found (installing)"
+  when: not agent.exists
 
 - debug:
-    msg: "cloudwatch agent found skipping install"
-  when: path.stat.islnk is defined
+    msg: "cloudwatch agent found (skipping install)"
+  when: agent.exists
 
 - name: create {{ windows_agent_log }} directory
   win_file:
     path: '{{ windows_agent_log }}'
     recurse: yes
     state: directory
-  when: path.stat.islnk is not defined
-
-- name: create {{ windows_cloudwatch_agent_path }} directory
-  win_file:
-    path: '{{ windows_cloudwatch_agent_path }}'
-    recurse: yes
-    state: directory
-  when: path.stat.islnk is not defined
-
-- name: create cloudwatch config (windows)
-  template:
-    src: 'templates/amazon-cloudwatch-agent-schema.j2'
-    dest: '{{ windows_cloudwatch_agent_path }}\\amazon-cloudwatch-agent-schema.json'
-  when: path.stat.islnk is not defined
+  when: not agent.exists
 
 - name: install cloudwatch agent (windows)
   win_package:
     path: '{{ windows_cloudwatch_agent_url }}'
     state: present
-    log_path: '{{ windows_agent_log }}\\cloudwatch_log.txt'
+    log_path: '{{ windows_agent_log }}\cloudwatch_log.txt'
     product_id: '{{ windows_cloudwatch_product_id }}'
-    validate_certs: no
-  when: path.stat.islnk is not defined
+  when: not agent.exists
+
+- name: create cloudwatch config (windows)
+  template:
+    src: 'templates/amazon-cloudwatch-agent-schema.j2'
+    dest: '{{ windows_cloudwatch_agent_path }}\amazon-cloudwatch-agent-schema.json'
+  when: not agent.exists
 
 - name: start cloudwatch agent (windows)
   win_command: |
     powershell.exe ./amazon-cloudwatch-agent-ctl.ps1 \
         -a fetch-config \
         -m ec2 \
-        -c file:'{{ windows_cloudwatch_agent_path }}\\amazon-cloudwatch-agent-schema.json' \
+        -c file:'{{ windows_cloudwatch_agent_path }}\amazon-cloudwatch-agent-schema.json' \
         -s
   args:
     chdir: "{{ windows_cloudwatch_agent_path }}"
-  when: path.stat.islnk is not defined
+  when: not agent.exists
 
 - name: verify cloudwatch started
   win_service:
     name: amazoncloudwatchagent
     state: started
+    start_mode: auto
