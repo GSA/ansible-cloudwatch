@@ -28,7 +28,7 @@
   when: not agent.exists
 
 - name: create cloudwatch config (windows)
-  template:
+  win_template:
     src: 'templates/amazon-cloudwatch-agent-schema.j2'
     dest: '{{ windows_cloudwatch_agent_path }}\amazon-cloudwatch-agent-schema.json'
   when: not agent.exists

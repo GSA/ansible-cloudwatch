@@ -26,6 +26,7 @@
   template:
     src: templates/amazon-cloudwatch-agent.j2
     dest: '{{ redhat_cloudwatch_agent_path }}/amazon-cloudwatch-agent.json'
+    mode: '0755'
   when: not agent.stat.exists
 
 - name: start cloudwatch agent (redhat)
