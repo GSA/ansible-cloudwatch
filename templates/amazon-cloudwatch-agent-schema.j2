@@ -9,7 +9,12 @@
 					},
 					{
 						"file_path": "c:\\ProgramData\\ssh\\logs\\sftp-server.log",
-						"log_group_name": "hosts",
+						"log_group_name": "ssh",
+						"log_stream_name": "{local_hostname}"
+					},
+					{
+						"file_path": "c:\\Temp\\Logs\\*.txt",
+						"log_group_name": "agents",
 						"log_stream_name": "{local_hostname}"
 					}
 				]
